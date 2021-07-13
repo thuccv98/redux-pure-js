@@ -3,10 +3,8 @@
 //----------------------------------------------
 const { createStore } = window.Redux;// object destructuring
 
-//create state
-const inittialState = [
-  'Listen to music'
-];
+//create initial state
+const inittialState = JSON.parse(localStorage.getItem('hobby_list')) || [];
 //reducer
 const hobbyReducer = ( state = inittialState, action ) => {
   switch (action.type) {
@@ -74,4 +72,7 @@ store.subscribe(() => {
   console.log('STATE UPDATE: ', store.getState());
   const newHobbyList = store.getState();
   renderHobbyList(newHobbyList);
+
+  // save in localStorage
+  localStorage.setItem('hobby_list', JSON.stringify(newHobbyList));
 })
