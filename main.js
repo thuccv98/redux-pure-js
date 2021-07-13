@@ -9,7 +9,16 @@ const inittialState = [
 ];
 //reducer
 const hobbyReducer = ( state = inittialState, action ) => {
-  return state;
+  switch (action.type) {
+    case 'ADD_HOBBY': {
+      const newList = [...state];
+      newList.push(action.payload);
+
+      return newList;
+    }
+    default:
+      return state;
+  }
 }
 //store
 const store = createStore(hobbyReducer);
@@ -38,3 +47,31 @@ const  renderHobbyList = (hobbyList) => {
 //Render initial hobby list
 const initialHobbyList = store.getState();
 renderHobbyList(initialHobbyList);
+
+// Handle form submit
+const hobbyFormElement = document.querySelector('#hobbyFormId');
+if (hobbyFormElement) {
+  const handleFormSubmit = (e) => {
+    // prevent browser from reloading while subbmit enter
+    e.preventDefault();
+    const hobbyTextElement = hobbyFormElement.querySelector('#hobbyTextId');
+    if(!hobbyTextElement) return;
+
+    console.log('SUBMIT', hobbyTextElement.value);
+    const action = {
+      type: 'ADD_HOBBY',
+      payload: hobbyTextElement.value //data
+    }
+    store.dispatch(action);// send action to reducer handle
+
+    // reset form
+    hobbyFormElement.reset();
+  };
+  hobbyFormElement.addEventListener('submit', handleFormSubmit);
+}
+
+store.subscribe(() => {
+  console.log('STATE UPDATE: ', store.getState());
+  const newHobbyList = store.getState();
+  renderHobbyList(newHobbyList);
+})
